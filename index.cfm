@@ -43,8 +43,8 @@
 
 <div class="container">
 <div class="cmd right">
-<cfif fileExists("#expandPath('inc/config/#SESSION.username#/shortcuts.cfm')#")>
-	<cfinclude template="inc/config/#SESSION.username#/shortcuts.cfm" />
+<cfif fileExists("#expandPath('inc/config/#SESSION.comiEditor.username#/shortcuts.cfm')#")>
+	<cfinclude template="inc/config/#SESSION.comiEditor.username#/shortcuts.cfm" />
 <cfelse>
 	<cfinclude template="inc/config/default/shortcuts.cfm" />
 </cfif>
