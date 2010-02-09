@@ -23,7 +23,7 @@
 		});
 		$("input:text, textarea").blur(function(){
 			if($(this).attr("value") == "") {
-						$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));
+				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));
 			}
 		});
 		$("form").submit(function() {
@@ -38,6 +38,8 @@
 		var scrollTop = this.scrollTop;
 		var bubbleEvent = true;
 		var newString = "";
+		var prefix = "";
+		var suffix = "";
 
 		if(this.tagName.toLowerCase()=="textarea") {
 			// tab
@@ -49,20 +51,28 @@
 						newString.splice(selectionStart-1,1);
 						this.value = newString.join("");
 						this.setSelectionRange(selectionStart-1, selectionEnd-1);
-						this.scrollTop = scrollTop;
 					} else if(!e.shiftKey) {
 						newString.splice(selectionStart,0,"\t");
 						this.value = newString.join("");
 						this.setSelectionRange(selectionStart+1, selectionEnd+1);
-						this.scrollTop = scrollTop;
 					}
 				}
 				bubbleEvent = false;
 			}// tab
 
-			// ctrl
+			// ctrl + shift
 			else if(e.ctrlKey && e.shiftKey) {
-				if(e.keyCode == 79) {
+				if(e.keyCode == 68) {
+					prefix = '<cfdump var="#';
+					suffix = '#" />';
+
+					newString = wrapText(this.value, prefix, suffix, selectionStart, selectionEnd);
+					this.value = newString;
+					this.setSelectionRange(selectionStart+prefix.length, selectionEnd+prefix.length);
+
+					bubbleEvent = false;
+				}// Ctrl + Shift + D = <cfdump var="#...#" />
+				else if(e.keyCode == 79) {
 					newString = wrapText(this.value, "<cfoutput>", "</cfoutput>", selectionStart, selectionEnd);
 					this.value = newString;
 					this.setSelectionRange(selectionStart+10, selectionEnd+10);
@@ -72,13 +82,16 @@
 				else if(e.keyCode == 51) {
 					newString = wrapText(this.value, "#", "#", selectionStart, selectionEnd);
 					this.value = newString;
-					this.setSelectionRange(selectionStart+1, selectionEnd+1);
+					this.setSelectionRange(selectionStart, selectionEnd+2);
 
 					bubbleEvent = false;
 				}// Ctrl + Shift + 3 = #...#
 				
 			}// ctrl + shift
+
+			// ctrl
 			else if(e.ctrlKey) {
+				// 3
 				if(e.keyCode == 51) {
 					newString = wrapText(this.value, "#", "#", selectionStart, selectionEnd);
 					this.value = newString;
@@ -86,6 +99,17 @@
 
 					bubbleEvent = false;
 				}// Ctrl + 3 = #...#
+				// D
+				else if(e.keyCode == 68) {
+					selectionStart = lineStart(this.value, selectionStart);
+					selectionEnd = lineEnd(this.value, selectionEnd);
+
+					newString = removeText(this.value, selectionStart-1, selectionEnd);
+					this.value = newString;
+					this.setSelectionRange(selectionStart, selectionStart);
+
+					bubbleEvent = false;
+				}// Ctrl + D = Delete selected line(s)
 			}//ctrl
 
 		}// textarea
@@ -103,10 +127,12 @@
 			}// ctrlKey
 		}// body
 
+		if(!bubbleEvent) {
+			this.scrollTop = scrollTop;
+		}
+
 		return bubbleEvent;
 	});//keydown()
-
-
 });//onload()
 
 function wrapText(text, startString, endString, startPosition, endPosition) {
@@ -119,6 +145,14 @@ function wrapText(text, startString, endString, startPosition, endPosition) {
 function insertText(text, subString, position) {
 	var result = text.split("");
 	result.splice(position, 0, subString);
+	result = result.join("");
+
+	return result;
+}//insertText()
+
+function removeText(text, startPosition, endPosition) {
+	var result = text.split("");
+	result.splice(startPosition, endPosition-startPosition, "");
 	result = result.join("");
 
 	return result;
@@ -144,6 +178,7 @@ window.onbeforeunload = function(){
 		if(this.defaultValue && this.defaultValue != this.value) {
 			returnString = "This file has unsaved content. Navigating away from this page will lose any unsaved data.";
 		}
+		alert(this);
 	});
 
 	if(returnString) {
