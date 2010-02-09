@@ -13,7 +13,7 @@
 		});
 		$("input:text, textarea").each(function(){
 			if($(this).attr("value") == "") {
-				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));
+				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));	
 			}
 		});
 		$("input:text, textarea").focus(function(){
@@ -59,6 +59,28 @@
 				}
 				bubbleEvent = false;
 			}// tab
+			// end
+			else if(e.keyCode == 35) {
+				selectionEnd = lineEnd(this.value, selectionEnd, true);
+				if(!e.shiftKey) {
+					selectionStart = selectionEnd;
+				}
+				this.setSelectionRange(selectionStart, selectionEnd);
+
+				bubbleEvent = false;
+			}
+			// end
+			// home
+			else if(e.keyCode == 36) {
+				selectionStart = lineStart(this.value, selectionStart, true);
+				if(!e.shiftKey) {
+					selectionEnd = selectionStart;
+				}
+				this.setSelectionRange(selectionStart, selectionEnd);
+
+				bubbleEvent = false;
+			}
+			// home
 
 			// ctrl + shift
 			else if(e.ctrlKey && e.shiftKey) {
@@ -158,17 +180,36 @@ function removeText(text, startPosition, endPosition) {
 	return result;
 }//insertText()
 
-function lineStart(text, position) {
+function lineStart(text, position, smartHome) {
 	var tempString = text.slice(0, position).split("\n");
 	var lastLine = tempString[tempString.length-1];
 	var linePosition = position - lastLine.length;
+	var offset = 0;
+
+	if(smartHome) {
+		offset = lastLine.length - lastLine.replace(/^\s+/,"").length;
+		console.log(offset)
+		if(linePosition + offset != position) {
+			linePosition += offset;
+		}
+	}
+
 	return linePosition;
 }//lineStart()
 
-function lineEnd(text, position) {
+function lineEnd(text, position, smartEnd) {
 	var tempString = text.slice(position, text.length).split("\n");
 	var firstLine = tempString[0];
 	var linePosition = position + firstLine.length;
+
+	if(smartEnd) {
+		offset = firstLine.replace(/\s+$/,"").length - firstLine.length;
+		console.log(offset)
+		if(linePosition + offset != position) {
+			linePosition += offset;
+		}
+	}
+
 	return linePosition;
 }//lineEnd()
 
