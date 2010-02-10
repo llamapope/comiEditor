@@ -19,6 +19,7 @@
 			</cfif>
 		</cfif>
 		
+		<!---
 		<cfif isDefined("arguments.params.newUsers")>
 			<cfset newRoutes = {}>
 			<cfloop list="#params.newUsers#" index="newUser">
@@ -30,7 +31,7 @@
 			<cfset application.wheels.appLocations = jsonSettings() />
 			<cfset session.flash.routesSet="Application Routes were set successfully.">
 			<cflocation url="?" addtoken="false">
-		</cfif>
+		</cfif> what the... --->
 	
 		<cffile action="read" file="#loc.fileName#" variable="loc.settingsFile">
 
