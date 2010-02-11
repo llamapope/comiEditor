@@ -59,7 +59,7 @@
 				}
 				bubbleEvent = false;
 			}// tab
-			// end
+			// End
 			else if(e.keyCode == 35) {
 				selectionEnd = lineEnd(this.value, selectionEnd, true);
 				if(!e.shiftKey) {
@@ -68,8 +68,7 @@
 				this.setSelectionRange(selectionStart, selectionEnd);
 
 				bubbleEvent = false;
-			}
-			// end
+			} // end
 			// home
 			else if(e.keyCode == 36) {
 				selectionStart = lineStart(this.value, selectionStart, true);
@@ -79,8 +78,7 @@
 				this.setSelectionRange(selectionStart, selectionEnd);
 
 				bubbleEvent = false;
-			}
-			// home
+			} // Home
 
 			// ctrl + shift
 			else if(e.ctrlKey && e.shiftKey) {
@@ -188,9 +186,11 @@ function lineStart(text, position, smartHome) {
 
 	if(smartHome) {
 		offset = lastLine.length - lastLine.replace(/^\s+/,"").length;
-		console.log(offset)
+
 		if(linePosition + offset != position) {
 			linePosition += offset;
+		} else if(offset == 0) {
+			linePosition = lineStart(text, lineEnd(text, linePosition, true), true);
 		}
 	}
 
@@ -204,18 +204,21 @@ function lineEnd(text, position, smartEnd) {
 
 	if(smartEnd) {
 		offset = firstLine.replace(/\s+$/,"").length - firstLine.length;
-		console.log(offset)
+
 		if(linePosition + offset != position) {
 			linePosition += offset;
+		} else if(offset == 0) {
+			linePosition = lineEnd(text, lineStart(text, linePosition, true), true);
 		}
 	}
+	return linePosition;
 }//lineEnd()
 
 window.onbeforeunload = function(){
 	var returnString = false;
 	$("texarea").each(function(){
 		if(this.defaultValue && this.defaultValue != this.value) {
-			returnString = "This file has unsaved content. Navigating away from this page will lose any unsaved data.";
+			returnString = "This file has unsaved content. Navigating away from this page will lose any unsaved data.";		
 		}
 		alert(this);
 	});
