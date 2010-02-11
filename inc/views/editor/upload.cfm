@@ -3,7 +3,7 @@
 	<cfset uploadFolder="#expandPath("/"&uploadFolder)#" />  <cfoutput>#uploadFolder#</cfoutput>
 </cfif>
 
-<cfif isNull(FORM.upload)>
+<cfif NOT isDefined("FORM.upload")>
 	<form method="post" enctype="multipart/form-data" action="?task=upload&folder=<cfoutput>#URL.folder#</cfoutput>">
 		<label>Upload a File<input type="file" name="upload" /></label>
 		<label><input type="checkbox" name="overwrite" value="true" /> Overwrite?</label>
