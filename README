@@ -17,10 +17,14 @@ For now, it lets you browse, edit, create, and delete files/folders at a very ba
 
 Download/unzip folder into a cfenabled directory.
 Change demo user password(change username too while you're in there)
-	config/users.cfm
-		authedUsers.demo.passwordHash = hash("your new password here", "SHA-512")
+	inc/config/.users.js.cfm
+		replace passwordHash with hash("your new password here", "SHA-512")
 
-		I'd recommend actually hashing the password and storing the hash instead of the function... kinda defeats the purpose of it all if you don't.
+		I'd recommend actually hashing the password and storing the hash instead of the function... for now, just dump or output the result somewhere and paste it in.
+
+		Rename config/.users.js.cfm to config/users.js.cfm
+
+		There is a .gitignore file in there to ignore anything else in the direcectory, so you shuold be safe to change your password and add a folder for your users' shortcuts
 
 ==== Use ====
 

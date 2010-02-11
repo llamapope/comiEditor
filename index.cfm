@@ -32,7 +32,7 @@
 	$(function(){
 		$("a.delete").click(function(){
 			var dialog = $("<div>Are you sure you want to delete this?</div>").appendTo("body");
-			$(dialog).dialog();
+			$(dialog).dialog({buttons:{"OK": function(){window.location=this.href;},"Cancel": function(){$(this).dialog("close");}}});
 			return false;
 		});
 	});

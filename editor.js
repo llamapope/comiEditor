@@ -13,7 +13,7 @@
 		});
 		$("input:text, textarea").each(function(){
 			if($(this).attr("value") == "") {
-				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));	
+				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));
 			}
 		});
 		$("input:text, textarea").focus(function(){
@@ -209,8 +209,6 @@ function lineEnd(text, position, smartEnd) {
 			linePosition += offset;
 		}
 	}
-
-	return linePosition;
 }//lineEnd()
 
 window.onbeforeunload = function(){
