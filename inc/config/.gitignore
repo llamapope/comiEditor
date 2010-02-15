@@ -1,7 +1,6 @@
 *
 **/*
-!demo/*
-!default/*
+!demo/**/*
 !default/**/*
 !.users.js.cfm
 !settings.cfm
