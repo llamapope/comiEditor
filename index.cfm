@@ -13,7 +13,7 @@
 	<cfset linkFolder = "#rereplace("#linkFolder#", '/\.\./SubDomains/([^/]*)(/?.*)', 'http://\1.#CGI.SERVER_NAME#\2')#" />
 <cfelseif find("/../wwwroot", linkFolder) GT 0>
 	<cfset linkFolder = replaceNoCase(linkFolder, "/../wwwroot", "", "all") />
-<cfelse>
+<cfelseif linkFolder NEQ "">
 	<cfset linkFolder = "/#linkFolder#" />
 </cfif>
 
