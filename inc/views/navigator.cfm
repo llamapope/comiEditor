@@ -30,9 +30,9 @@
 <script>
 ;(function($){
 	$(function(){
-		$("a.delete").click(function(){
+		$("a.delete").click(function(e){
 			var dialog = $("<div>Are you sure you want to delete this?</div>").appendTo("body");
-			$(dialog).dialog({buttons:{"OK": function(){console.log(this);window.location=this.href;},"Cancel": function(){$(this).dialog("close");}}});
+			$(dialog).dialog({buttons:{"OK": function(){window.location=e.originalTarget.href;},"Cancel": function(){$(this).dialog("close");}}});
 			return false;
 		});
 	});
@@ -54,7 +54,7 @@
 
 <cfoutput>
 <div class="cmd">
-New:	<a href="mkcfm.cfm?folder=#uploadFolder#">File</a> | <a href="mkcfm.cfm?folder=#uploadFolder#&dir">Folder</a> | <a href="?task=upload&folder=#uploadFolder#">Upload</a> | <a href="?task=import&folder=#uploadFolder#">Import</a>
+New:	<a href="#editorScript#?folder=#uploadFolder#">File</a> | <a href="#editorScript#?folder=#uploadFolder#&dir">Folder</a> | <a href="?task=upload&folder=#uploadFolder#">Upload</a> | <a href="#editorScript#?task=import&folder=#uploadFolder#">Import</a>
 </div>
 </cfoutput>
 
