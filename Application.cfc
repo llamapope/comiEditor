@@ -18,6 +18,7 @@
 		</cfif>
 
 		<cfinclude template="inc/config/settings.cfm" />
+		<cfinclude template="inc/utilities/format.cfm" />
 
 		<!--- already authenticated, load the requested page --->
 		<cfif SESSION.comiEditor.isAuthenticated>
