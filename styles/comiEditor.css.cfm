@@ -1,11 +1,18 @@
-.container { min-width: 300px; padding-top: 1em; }
-.fileManager { max-width: 600px; }
-.fileManager a { float: right; width: 50px; text-align: center; }
+body { margin: 0; padding: 0; font-family: arial; font-size: 14px; }
+
+.navigator, .editor { padding-top: 1em; }
+
+.fileManager { min-width: 250px; max-width: 10%; float: left; }
+.fileManager a { display: block; padding: 2px 5px 4px; }
+.fileManager li { position: relative; }
+.fileManager li:hover .menu, .fileManager .menu:hover { display: block; }
+.fileManager .menu { position: absolute; display: none; background: #fff; border: solid 1px #ccc; right: -38%; width: 40%; top: -50%; z-index: 1000; }
+
+.editor { margin-right: 200px; overflow: auto; position: relative; z-index: 100; }
 
 a:hover { color: #009; font-weight: bold; }
 a.delete:hover { color: #600; }
 a.file:hover, a.dir:hover, h3 a:hover { color: #040; }
-a.file, a.dir { float: none; padding: 0 15px 0 5px; display: block; width: auto; text-align: left; }
 
 .fileManager li { clear: both; }
 .fileManager li:hover { background: #fefeea; }
