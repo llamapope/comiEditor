@@ -6,5 +6,5 @@
 .error em { color: #666; display: block; }
 
 label input, label textarea { display: block; width: 100%; font-family: monospace; font-size: 1em; }
-textarea { height: 80%; }
+textarea { height: 80%; overflow: auto; white-space: nowrap; }
 .prompt { color: #ddd; }

@@ -114,13 +114,17 @@
 	</label>
 	<label>
 		<span>File Content</span>
-		<textarea cols="80" id="editor" class="bespin" name="fileContent">#replaceNoCase(rereplace(trim(FORM.fileContent), "&([a-z]*;)", "&amp;\1", "all"), "<", "&lt;", "all")#</textarea>
+		<textarea wrap="off" spellcheck="false" cols="80" id="editor" name="fileContent">#replaceNoCase(rereplace(trim(FORM.fileContent), "&([a-z]*;)", "&amp;\1", "all"), "<", "&lt;", "all")#</textarea>
 	</label>
 </cfif>
 	<input type="hidden" name="originalFile" value="#URL.file#" />
 	<input type="hidden" name="folder" value="#URL.folder#" />
 	<input type="submit" value="#mode IS "edit"?"Save":mode#" />
         <input type="submit" name="cancel" value="Cancel" />
+
+<div class="controlBox">
+<a href="##maximize" class="window">Maximize Editor</a>
+</div>
 </form>
 
 <cfif fileExists(expandPath("../config/#session.comiEditor.username#/dictionaries/index.cfm"))>
@@ -129,3 +133,23 @@
 	<cfinclude template="../config/default/dictionaries/index.cfm" />
 </cfif>
 </cfoutput>
+
+<script>
+$(".window").toggle(function() {
+	var css = {position: "fixed", height: "100%",top: 0,bottom:0,left:0,right:0};
+	$(this).text("Restore Editor");
+	$("#editor", $(this).parents("form")).css(css);
+	$(this).parent().addClass("restore");
+	return false;
+},
+function() {
+	$(this).text("Maximize Editor");
+	$("#editor", $(this).parents("form")).css({position: "static", height: "80%"});return false;
+	$(this).parent().removeClass("restore");
+	return false;
+});
+</script>
+<style>
+.controlBox { position: absolute; z-index: 1000;bottom: 10px; right: 5px; }
+.controlBox.restore { position: fixed; top: 4px; bottom: auto; right: 20px; }
+</style>
