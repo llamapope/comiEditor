@@ -61,7 +61,12 @@
 			}// tab
 			// End
 			else if(e.keyCode == 35) {
-				selectionEnd = lineEnd(this.value, selectionEnd, true);
+				if(e.ctrlKey) {
+					selectionEnd = this.value.length;
+				} else {
+					selectionEnd = lineEnd(this.value, selectionEnd, true);
+				}
+				
 				if(!e.shiftKey) {
 					selectionStart = selectionEnd;
 				}
@@ -71,7 +76,11 @@
 			} // end
 			// home
 			else if(e.keyCode == 36) {
-				selectionStart = lineStart(this.value, selectionStart, true);
+				if(e.ctrlKey) {
+					selectionStart = 0;
+				} else {
+					selectionStart = lineStart(this.value, selectionStart, true);
+				}
 				if(!e.shiftKey) {
 					selectionEnd = selectionStart;
 				}
@@ -106,6 +115,13 @@
 
 					bubbleEvent = false;
 				}// Ctrl + Shift + 3 = #...#
+				else if(e.keyCode == 222) {
+					newString = wrapText(this.value, '"', '"', selectionStart, selectionEnd);
+					this.value = newString;
+					this.setSelectionRange(selectionStart, selectionEnd+2);
+
+					bubbleEvent = false;
+				}// Ctrl + Shift + " = "..."
 				
 			}// ctrl + shift
 
@@ -119,6 +135,30 @@
 
 					bubbleEvent = false;
 				}// Ctrl + 3 = #...#
+				// '
+				else if(e.keyCode == 222) {
+					newString = wrapText(this.value, "'", "'", selectionStart, selectionEnd);
+					this.value = newString;
+					this.setSelectionRange(selectionStart, selectionEnd+2);
+
+					bubbleEvent = false;
+				}// Ctrl + ' = '...'
+				// [
+				else if(e.keyCode == 219) {
+					newString = wrapText(this.value, "[", "]", selectionStart, selectionEnd);
+					this.value = newString;
+					this.setSelectionRange(selectionStart, selectionEnd+2);
+
+					bubbleEvent = false;
+				}// Ctrl + [ = [...]
+				// (
+				else if(e.keyCode == 57) {
+					newString = wrapText(this.value, "(", ")", selectionStart, selectionEnd);
+					this.value = newString;
+					this.setSelectionRange(selectionStart, selectionEnd+2);
+
+					bubbleEvent = false;
+				}// Ctrl + ( = (...)
 				// D
 				else if(e.keyCode == 68) {
 					selectionStart = lineStart(this.value, selectionStart);
