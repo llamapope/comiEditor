@@ -44,18 +44,43 @@
 		if(this.tagName.toLowerCase()=="textarea") {
 			// tab
 			if(e.keyCode == 9) {
+				var tab = "\t";
 				if(selectionStart == selectionEnd) {
 					newString = this.value.split("");
 
-					if(e.shiftKey && newString[selectionStart-1].search(/( |\t)/) == 0) {
+					if(e.shiftKey && newString[selectionStart-1].search(/(\s)/) == 0) {
 						newString.splice(selectionStart-1,1);
 						this.value = newString.join("");
 						this.setSelectionRange(selectionStart-1, selectionEnd-1);
 					} else if(!e.shiftKey) {
-						newString.splice(selectionStart,0,"\t");
+						newString.splice(selectionStart,0,tab);
 						this.value = newString.join("");
 						this.setSelectionRange(selectionStart+1, selectionEnd+1);
 					}
+				// multiline selection
+				} else {
+					var regEx = /\n/g;
+					var replaceText = "\n"+tab;
+					var indentedText = "";
+					var prefix = "";
+
+					// outdent
+					if(e.shiftKey) {
+						regEx = /^[ |\t]/mg;
+						replaceText = "";
+						console.log(regEx);
+						selectionStart = lineStart(this.value, lineEnd(this.value,selectionStart));
+					// indent
+					} else {
+						selectionStart = lineStart(this.value, lineEnd(this.value,selectionStart), true);
+						prefix = tab;
+					}
+					
+					indentedText = prefix+this.value.slice(selectionStart,selectionEnd).replace(regEx,replaceText);
+					
+					this.value = this.value.slice(0,selectionStart)+indentedText+this.value.slice(selectionEnd,this.value.length);
+					selectionEnd = lineEnd(this.value, selectionStart + indentedText.length);
+					this.setSelectionRange(selectionStart, selectionEnd);
 				}
 				bubbleEvent = false;
 			}// tab
@@ -244,7 +269,7 @@ function lineEnd(text, position, smartEnd) {
 
 	if(smartEnd) {
 		offset = firstLine.replace(/\s+$/,"").length - firstLine.length;
-
+	
 		if(linePosition + offset != position) {
 			linePosition += offset;
 		} else if(offset == 0) {
