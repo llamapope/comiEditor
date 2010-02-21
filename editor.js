@@ -80,6 +80,7 @@
 					
 					this.value = this.value.slice(0,selectionStart)+indentedText+this.value.slice(selectionEnd,this.value.length);
 					selectionEnd = lineEnd(this.value, selectionStart + indentedText.length);
+					selectionStart += prefix.length;
 					this.setSelectionRange(selectionStart, selectionEnd);
 				}
 				bubbleEvent = false;
