@@ -8,14 +8,20 @@ body { margin: 0; padding: 30px 0 0; font-family: arial; font-size: 14px; }
 
 .editor { margin-right: 200px; overflow: auto; position: relative; z-index: 100; }
 
-.fileManager li:hover a { color: #009; font-weight: bold; }
+.fileManager li:hover a { color: #009; }
 .fileManager li:hover .menu a { color:#444; font-weight: normal; }
 .fileManager li:hover .menu a:hover { color: #060; font-weight: bold; }
 .fileManager li:hover .menu a.delete:hover { color: #600; }
 
 .fileManager li { clear: both; }
-.fileManager li:hover { background: #FFFDEF; }
-.fileManager a.dir { font-weight: bold; }
+.fileManager li:hover ul { background: none; }
+.fileManager .dir { font-weight: bold; }
+.fileManager .file { font-weight: normal; }
+
+.fileManager li { padding-left: 6px; border-left: dotted 1px #dedede; }
+
+.fileManager ul { padding-left: 8px; }
+.fileManager ul ul { display: none; }
 
 h1, h2, h3, h4, h5, h6 { font-size: 1em; }
 
