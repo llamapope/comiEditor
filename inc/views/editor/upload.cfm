@@ -18,13 +18,14 @@
 	</cfif>
 
 	<cffile  
-	    action = "uploadall" 
+	    action = "upload" 
 	    destination = "#uploadFolder#" 
-	    nameConflict = "#FORM.overwrite?"overwrite":"makeunique"#" 
+	    nameConflict = "#FORM.overwrite?"overwrite":"makeunique"#"
+	    fileField = "upload"
 	    result = "newUpload">
 	
 	<cfdump var="#newUpload#" />
-	<cflocation url="index.cfm?folder=#URL.folder##newUpload.fileWasOverwritten?"overwrite=true":""#&uploaded=#serverFile#" addtoken="false" />
+	<cflocation url="index.cfm?folder=#URL.folder##newUpload.fileWasOverwritten?"overwrite=true":""#&uploaded=#serverFileName#" addtoken="false" />
 </cfif>
 
 <cfdirectory action="list" directory="#uploadFolder#" name="dir" />

@@ -54,7 +54,7 @@
 
 <cfoutput>
 <div class="cmd">
-New:	<a href="#editorScript#?folder=#uploadFolder#">File</a> | <a href="#editorScript#?folder=#uploadFolder#&dir">Folder</a> | <a href="?task=upload&folder=#uploadFolder#">Upload</a> | <a href="#editorScript#?task=import&folder=#uploadFolder#">Import</a>
+New:	<a href="#editorScript#?folder=#uploadFolder#&file=new.cfm">File</a> | <a href="#editorScript#?folder=#uploadFolder#&dir">Folder</a> | <a href="?task=upload&folder=#uploadFolder#">Upload</a> | <a href="#editorScript#?task=import&folder=#uploadFolder#">Import</a>
 </div>
 </cfoutput>
 
