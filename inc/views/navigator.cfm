@@ -26,7 +26,7 @@
 <cfsavecontent variable="htmlHead">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-<link href="styles/comiEditor.css.cfm" rel="stylesheet" type="text/css" />
+<link href="styles/comiEditor.css" rel="stylesheet" type="text/css" />
 <script>
 ;(function($){
 	$(function(){

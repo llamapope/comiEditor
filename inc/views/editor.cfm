@@ -94,7 +94,7 @@
 </cftry>
 
 <style>
-@import "styles/editor.css.cfm";
+@import "styles/editor.css";
 </style>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
@@ -114,7 +114,7 @@
 	</label>
 	<label>
 		<span>File Content</span>
-		<textarea wrap="off" spellcheck="false" cols="80" id="editor" name="fileContent">#replaceNoCase(rereplace(trim(FORM.fileContent), "&([a-z]*;)", "&amp;\1", "all"), "<", "&lt;", "all")#</textarea>
+		<textarea class="bespin" wrap="off" spellcheck="false" cols="80" id="editor" name="fileContent">#replaceNoCase(rereplace(trim(FORM.fileContent), "&([a-z]*;)", "&amp;\1", "all"), "<", "&lt;", "all")#</textarea>
 	</label>
 </cfif>
 	<input type="hidden" name="originalFile" value="#URL.file#" />
@@ -122,9 +122,9 @@
 	<input type="submit" value="#mode IS "edit"?"Save":mode#" />
         <input type="submit" name="cancel" value="Cancel" />
 
-<div class="controlBox">
+<!---<div class="controlBox">
 <a href="##maximize" class="window">Maximize Editor</a>
-</div>
+</div>--->
 </form>
 
 <cfif fileExists(expandPath("../config/#session.comiEditor.username#/dictionaries/index.cfm"))>

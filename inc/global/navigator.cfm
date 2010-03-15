@@ -53,15 +53,12 @@
 	<cfargument name="osPathDelim" type="string" default="#getFileSeperator()#">
 	<cfargument name="webPathDelim" type="string" default="/">
 	<cfargument name="depth" type="numeric" default="1">
-	<cfargument name="basePath" type="string" default="" />
+	<cfargument name="basePath" type="string" default="#arguments.parent#" />
 	
 	<cfset var result = "" />
 	<cfset var justMyKids = "" />
+	<cfset var loc = {basePath=arguments.basePath} />
 
-	<cfif arguments.basePath EQ "">
-		<cfset arguments.basePath = arguments.parent />
-	</cfif>
-	
 	<cfquery name="justMyKids" dbtype="query">
 	select	*
 	from	arguments.files
@@ -71,8 +68,25 @@
 		<cfsavecontent variable="result">
 			<cfoutput><ul class="level#depth#"></cfoutput>
 			<cfoutput query="justMyKids">
+				<cfset loc.i = 0 />
+				<cfloop list="#arguments.basePath#" index="loc.basePath">
+					<cfset loc.i++ />
+					<cfset loc.basePath = rereplace(loc.basePath,"[\#osPathDelim#]$","") />
+					<cfif find(loc.basePath, directory)>
+						<cfif listLen(arguments.replacePathWith) GTE loc.i>
+							<cfset loc.replacePathWith = listGetAt(arguments.replacePathWith, loc.i) />
+						<cfelse>
+							<cfset loc.replacePathWith = arguments.replacePathWith />
+						</cfif>
+ 
+						<cfset loc.folder = replace(directory, loc.basePath, rereplace(loc.replacePathWith,"[\#osPathDelim#]$","")) />
+						<cfbreak />
+					<cfelse>
+						<cfset loc.folder = directory />
+					</cfif>
+				</cfloop>
 				<li class="#lCase(type)#<cfif currentRow EQ 1> first<cfelseif currentRow EQ justMyKids.recordCount> last</cfif>">
-					<a href="#listChangeDelims(rereplace(directory, arguments.basePath, arguments.replacePathWith), arguments.webPathDelim, arguments.osPathDelim)##arguments.webPathDelim##name#">
+					<a href="#listChangeDelims(loc.folder, arguments.webPathDelim, arguments.osPathDelim)##arguments.webPathDelim#<cfif type IS "file">&file=</cfif>#name#">
 						#name#
 					</a>
 				<cfif type is "Dir">

@@ -6,24 +6,15 @@
 	<cfif lineFormat IS "unix">
 		<cfset loc.endl = chr(10) />
 		<cfset loc.text = replace(loc.text, chr(13)&chr(10), chr(10), "all") />
+	<cfelseif lineFormat IS "windows">
+		<cfset loc.endl = chr(13)&chr(10) />
+		<cfset loc.text = replace(loc.text, chr(10), loc.endl, "all") />
 	</cfif>
 
 	<!--- strip HTML elements that will cause issues --->
 	<cfset loc.text=replace(loc.text,">","&gt;","all")>
 	<cfset loc.text=replace(loc.text,"<","&lt;","all")>
 
-	<cfset loc.text=rereplace(loc.text,"\*\*([^\*\*]+)\*\*","<strong>\1</strong>","all")>
-	<cfset loc.text=rereplace(loc.text,"//([^//]+)//","<em>\1</em>","all")>
-	<cfset loc.text=rereplace(loc.text,"__([^__]+)__",'<u>\1</u>',"all")>
-	<cfset loc.text=rereplace(loc.text,"--([^--]+)--",'<s>\1</s>',"all")>
-	<cfset loc.text=rereplace(loc.text,"{{([^}}]+)}}",'<tt>\1</tt>',"all")>
-	<cfset loc.text=rereplace(loc.text,"\^\^([^\^\^]+)\^\^",'<sup>\1</sup>',"all")>
-	<cfset loc.text=rereplace(loc.text,",,([^,,]+),,",'<sub>\1</sub>',"all")>
-	<cfset loc.text=rereplace(loc.text,"!!([^!!]+)!!",'<big>\1</big>',"all")>
-	<cfset loc.text=rereplace(loc.text,";;([^;;]+);;",'<small>\1</small>',"all")>
-	<cfset loc.text=rereplace(loc.text,"\[\[([^\]]+)/]]",'<div>attr:\1</div>',"all")>
-	<cfset loc.text=rereplace(loc.text," \* ",'\1<li>',"all")>	
-		
 	<cfset html="">
 	<cfset loc.text=rereplacenocase(loc.text,"(?m)([\S]+)[\r\n][\r\n]([\S]+)[\r\n]$","\1<br />\2","all")>
 	<cfloop list="#loc.text#" delimiters="#loc.endl#" index="i">
