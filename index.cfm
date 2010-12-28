@@ -2,7 +2,7 @@
 <head>
 <body>
 <div class="navigator">
-<cfinclude template="inc/views/navigator.cfm" />
+<cfinclude template="inc/views/navigator.2.cfm" />
 </div>
 
 <div class="editor">
@@ -18,7 +18,7 @@
 
 <cftry>
 <script src="navigator.js"></script>
-<cfinclude template="inc/views/navigator.2.cfm" />
+<cfinclude template="inc/views/navigator.cfm" />
 <cfcatch>
 <cfdump var="#cfcatch#" />
 </cfcatch>

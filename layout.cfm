@@ -20,7 +20,7 @@
 </script>
 
 <script src="editor.js"></script>
-<script src="navigator.js"></script>
+<script src="navigator.2.js"></script>
 
 </head>
 

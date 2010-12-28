@@ -1,4 +1,4 @@
-<cfcomponent>
+<cfcomponent output="false">
 	<cfset this.name = "comiEditor" />
 	<cfset this.sessionManagement = "true" />
 	<cfset this.sessionTimeout=CreateTimeSpan(0,7,0,0) />

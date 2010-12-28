@@ -25,7 +25,7 @@
 	    result = "newUpload">
 	
 	<cfdump var="#newUpload#" />
-	<cflocation url="index.cfm?folder=#URL.folder##newUpload.fileWasOverwritten?"overwrite=true":""#&uploaded=#serverFileName#" addtoken="false" />
+	<cflocation url="index.cfm?folder=#URL.folder##newUpload.fileWasOverwritten?"overwrite=true":""#&uploaded=#newUpload.serverFileName#" addtoken="false" />
 </cfif>
 
 <cfdirectory action="list" directory="#uploadFolder#" name="dir" />
