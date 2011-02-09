@@ -13,12 +13,12 @@
 <div id="comiEditor">
 	<div id="comiEditor-mainMenu">Main Menu</div>
 	<div id="comiEditor-userMenu">User Menu</div>
-	<div id="comiEditor-navigator">Nav</div>
+	<div id="comiEditor-navigator"></div>
 	<div id="comiEditor-tasks">tasks</div>
 	<div id="comiEditor-shortcuts">shortcuts</div>
 	<div id="comiEditor-snipets">snipets</div>
 	<div id="comiEditor-dictionary">dictionary</div>
-	<div id="comiEditor-editor">editor</div>
+	<div id="comiEditor-editor"></div>
 	<div id="comiEditor-console">console</div>
 </div>
 

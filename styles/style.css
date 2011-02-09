@@ -1,14 +1,26 @@
 body { padding: 0; margin: 0; height: 100%; width: 100%; overflow: hidden; }
 #comiEditor { top: 0; left: 0; right: 0; bottom: 0; font-size: .9em; color: #222; }
-.panel { background: #dedede; overflow: hidden; width: 250px; max-height: 100%; border-right: solid 5px #dedede; }
-.panel #comiEditor-navigator { background: #fff; height: 100%; min-width: inherit; overflow: auto; }
-#comiEditor-navigator ul { list-style: none; padding: 0px 15px; margin: 0; white-space: nowrap; }
-#comiEditor-navigator li { padding: 1px 0 2px; }
-#comiEditor-navigator .ui-icon { float: left; margin-right: 2px; }
-#comiEditor-navigator li.selected { font-weight: bold; }
-#comiEditor-navigator li.selected ul { font-weight: normal; }
+body { font-family: arial; }
 
-#comiEditor-navigator .status { float:left; height:8px; left:7px; margin-top:5px; position:absolute; width:7px; }
-#comiEditor-navigator .status.loading { background:#EFAC1D; }
+#comiEditor { position: fixed; }
 
+#comiEditor-mainMenu { top: 0; left: 0; right: 0; background: #444; color: #eee; line-height: 1.7em; }
+
+#comiEditor-userMenu { top: 1.3em; left: 0; right: 0; background: #333; color: #fff; line-height: 1.7em; }
+
+#comiEditor-navigator { width: 250px; overflow: auto; position: fixed; top: 3.4em; bottom: 0; border-right: solid 1px #999; }
+	#comiEditor-navigator ul { list-style: none; padding: 0px 15px; margin: 0; white-space: nowrap; }
+	#comiEditor-navigator li { padding: 1px 0 2px; }
+	#comiEditor-navigator .ui-icon { float: left; margin-right: 2px; }
+	#comiEditor-navigator li.selected { font-weight: bold; }
+	#comiEditor-navigator li.selected ul { font-weight: normal; }
+	
+	#comiEditor-navigator .status { float:left; height:8px; left:7px; margin-top:5px; position:absolute; width:7px; }
+	#comiEditor-navigator .status.loading { background:#EFAC1D; }
+	
+#comiEditor-editor { position: fixed; left: 250px; top: 3.4em; right: 300px; bottom: 150px; border: solid 1px #999; }
+
+#comiEditor-dictionary, #comiEditor-snipets, #comiEditor-shortcuts, #comiEditor-tasks { position: fixed; right: 0; top: 3.4em; bottom: 150px; width: 300px; }
+
+#comiEditor-console { position: fixed; left:251px; bottom: 0; right: 0; height: 150px; border-top: solid 1px #999; }
 

@@ -9,7 +9,7 @@
 	<!--- no cfml files in this folder should be directly accessible --->
 	<cffunction name="onRequest">
 		<cfargument name="targetPage">
-		<cfif arguments.targetPage EQ "/comiEditor/inc/comiEditor.cfc">
+		<cfif arguments.targetPage EQ "/ce/inc/ComiEditor.cfc">
 			<cfoutput><cfinclude template="#arguments.targetPage#"></cfoutput>
 		</cfif>
 	</cffunction>

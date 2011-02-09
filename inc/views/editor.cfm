@@ -97,7 +97,7 @@
 @import "styles/editor.css";
 </style>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="editor.js"></script>
 
 <cfoutput>

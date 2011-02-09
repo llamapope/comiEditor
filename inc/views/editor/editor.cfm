@@ -1,1 +1,1 @@
-test editor
+<cfoutput><cfinclude template="../../../../canvas.cfm"></cfoutput>

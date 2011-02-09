@@ -56,7 +56,7 @@
 			var viewName = getViewName(this);
 
 			if(viewName) {
-				$.ajax({ url: "/comiEditor/inc/comiEditor.cfc?method=load&returnformat=plain&view="+viewName,
+				$.ajax({ url: "/ce/inc/comiEditor.cfc?method=load&returnformat=plain&view="+viewName,
 					data: $(this).attr("params"),
 					context: this,
 					success: function(data){

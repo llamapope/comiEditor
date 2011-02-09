@@ -3,8 +3,8 @@
 	SELECT * FROM dir
 	ORDER BY type, name
 </cfquery>
-<ul>
+<cfoutput><ul></cfoutput>
 <cfoutput query="sortedDir">
 	<li class="#lcase(type)#">#name#</li>
 </cfoutput>
-</ul>
+<cfoutput></ul></cfoutput>

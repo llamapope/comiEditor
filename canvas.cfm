@@ -23,7 +23,7 @@
 
 <canvas></canvas>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="http://popespages.com/javascripts/jquery/jquery-mousewheel.min.js"></script>
+<script src="http://halffastsolutions.com/javascripts/jquery/jquery-mousewheel.min.js"></script>
 
 <script>
 

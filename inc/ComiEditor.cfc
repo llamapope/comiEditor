@@ -1,10 +1,13 @@
 <cfcomponent output="false">
 
+	<cfset variables.editorRoot = "/ce">
+
 	<cfset variables.editor = {
-		scripts = "/comiEditor/scripts",
-		userFolder = "/comiEditor/config/llama",
+		editorRoot = editorRoot,
+		scripts = "#editorRoot#/scripts",
+		userFolder = "#editorRoot#/config/llama",
 		userScripts = "scripts",
-		stylesheets = "/comiEditor/styles",
+		stylesheets = "#editorRoot#/styles",
 		theme = "vader",
 		path = "/"
 	}>
