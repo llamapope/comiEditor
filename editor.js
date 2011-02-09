@@ -3,6 +3,7 @@
 		$("form").each(function(){
 			this.reset();
 		});
+
 		$("label").each(function(){
 			var labelHelper = $(this).children("span");
 			$(this).attr("text", labelHelper.text());
@@ -16,6 +17,7 @@
 				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));
 			}
 		});
+
 		$("input:text, textarea").focus(function(){
 			if($(this).hasClass("prompt")) {
 				$(this).removeClass("prompt").attr("value", "");
@@ -26,9 +28,30 @@
 				$(this).addClass("prompt").attr("value", $(this).parent("label").attr("text"));
 			}
 		});
-		$("form").submit(function() {
+		$("form:not(:has([input=file]))").submit(function() {
 			$(".prompt", $(this)).attr("value", "").removeClass("prompt");
-			return true;
+
+			$(".message").stop().hide().css({opacity: 1}).attr("class", "message").addClass("pending").html("saving " + $("input[name=fileName]").val() + " ...").show();
+
+			$.ajax({
+				type: "post",
+				data: {
+					fileName: $("input[name=fileName]").val(),
+					fileContent: $("textarea[name=fileContent]").val(),
+					originalFile: $("input[name=originalFile]").val(),
+					folder: $("input[name=folder]").val(),
+					returnFormat: "json"
+				},
+				url: window.location.href,
+				success: function(){
+					$(".message").removeClass("pending").addClass("success").html($("input[name=fileName]").val() + " saved.").animate({opacity:0}, 5000);
+				},
+				error: function(){
+					$(".message").removeClass("pending").addClass("error").html("Save failed!").animate({opacity:0}, 10000);
+				}
+			});
+
+			return false;
 		});
 		$("form textarea[name=fileContent]").focus();
 

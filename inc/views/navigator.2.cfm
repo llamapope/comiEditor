@@ -1,5 +1,5 @@
 <cfparam name="URL.folder" default="" />
-<!---
+
 <cfset initialDir = expandPath("/")>
 <cfdirectory directory="#initialDir#" recurse="yes" name="files" sort="directory asc, type ASC, name ASC">
 
@@ -12,4 +12,4 @@
 	#displayDirectoryTree(files=filteredFiles,parent=initialDir,replacePathWith="?folder=,?folder=miscellaneous/comiEditor/",basePath="#expandPath("/")#,/home/pope/git/llamapope/comiEditor/")#
 </div>
 </cfoutput>
---->
+
