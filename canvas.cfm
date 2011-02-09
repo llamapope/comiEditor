@@ -8,13 +8,18 @@
 	<style>
 		html { height: 100%; }
 		body { height: 100%; margin: 0; padding: 0; }
-		canvas { display: block; color:  #0f0; font-size: 14px; font-family: monospace; cursor: text; overflow: scroll; }
+		canvas { display: block; color:  #0f0; font-size: 14px; font-family: monospace; cursor: text; overflow: scroll; }
 	</style>
 
 </head>
 <body>
 
-<cffile file="canvas.cfm" variable="f" action="read"/>
+<cfparam name="URL.file" default="">
+<cfif URL.file NEQ "">
+	<cffile file="#expandPath(URL.file)#" variable="f" action="read"/>
+<cfelse>
+	<cfset f.contents = "">
+</cfif>
 
 <script>
 	var file = { contents: <cfoutput>#serializeJSON(f)#</cfoutput> };
@@ -102,7 +107,7 @@
 			context.textBaseline = "middle";
 			context.lineHeight = lineHeight;
 			
-			context.fillStyle = "#eed4f9";
+			context.fillStyle = "#efe4d9";
 			context.fillRect(0, 0, lineMarginWidth + marginLeft, canvas.height);
 
 			context.strokeStyle = "#999";

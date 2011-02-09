@@ -5,6 +5,6 @@
 </cfquery>
 <cfoutput><ul></cfoutput>
 <cfoutput query="sortedDir">
-	<li class="#lcase(type)#">#name#</li>
+	<li class="#lcase(type)#"><span>#name#</span></li>
 </cfoutput>
 <cfoutput></ul></cfoutput>

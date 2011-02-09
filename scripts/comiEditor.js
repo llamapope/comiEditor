@@ -40,6 +40,14 @@
 					$(this).children(".ui-icon").toggleClass("ui-icon-folder-collapsed ui-icon-folder-open").siblings("ul").toggle();
 					// TODO: refresh folder! Don't want it to collapse or lose any children nodes though...
 				}
+			} else if($(this).hasClass("file")) {
+				var path = "/";
+
+				$(this).parents(".dir").each(function(){
+					path = "/" + $(">span", this).text() + path;
+				});
+
+				console.log(path + $(">span", this).text());
 			}
 
 			// only one file/folder should ever be selected (unless control or shift is used...)
