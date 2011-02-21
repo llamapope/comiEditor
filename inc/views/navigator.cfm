@@ -32,7 +32,7 @@
 	$(function(){
 		$("a.delete").click(function(e){
 			var dialog = $("<div>Are you sure you want to delete this?</div>").appendTo("body");
-			$(dialog).dialog({buttons:{"OK": function(){window.location=e.originalTarget.href;},"Cancel": function(){$(this).dialog("close");}}});
+			$(dialog).dialog({buttons:{"OK": function(){window.location=e.originalTarget.href + "&confirm=true";},"Cancel": function(){$(this).dialog("close");}}});
 			return false;
 		});
 	});
@@ -79,7 +79,7 @@ New:	<a href="#editorScript#?folder=#uploadFolder#&file=new.cfm">File</a> | <a h
 			<a href="?folder=#uploadFolder##uploadFolder NEQ ""?"/":""##name#" class="#type#">#name#</a>
 		</cfif>
 			<div class="menu">
-				<a href="#editorScript#?<cfif type EQ "file">file=#name#&</cfif>action=delete&folder=#uploadFolder#" class="delete">Delete</a>
+				<a href="#editorScript#?<cfif type EQ "file">file=#name#&<cfelseif type EQ "dir">dir=#name#&</cfif>action=delete&folder=#uploadFolder#" class="delete">Delete</a>
 				<a href="#linkFolder#/#name#" target="_blank">View</a>
 			</div>
 		</li>

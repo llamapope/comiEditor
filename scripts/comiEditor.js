@@ -46,8 +46,9 @@
 				$(this).parents(".dir").each(function(){
 					path = "/" + $(">span", this).text() + path;
 				});
-
-				console.log(path + $(">span", this).text());
+				
+				$("#comiEditor-editor").attr("params", "file=" + path + $(">span", this).text());
+				$.loadView("#comiEditor-editor");
 			}
 
 			// only one file/folder should ever be selected (unless control or shift is used...)

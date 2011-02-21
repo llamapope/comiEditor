@@ -5,9 +5,9 @@ $(function(){
 		$(this).children("ul").toggle();
 		return false;
 	});
-$(".fileManager li.file").click(function(event){
-event.stopPropagation();
-});
+	$(".fileManager li.file").click(function(event){
+		event.stopPropagation();
+	});
 });
 
 })(jQuery);

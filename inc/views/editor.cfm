@@ -67,7 +67,7 @@
 			<cfif isDefined("URL.confirm") AND URL.confirm EQ true>
 				<cfif DirectoryExists("#expandPath('/')##uploadFolder#/#URL.dir#")>
 					<cfdirectory action="delete" directory="#expandPath('/')##uploadFolder#/#URL.dir#" recurse="true" />
-					<cflocation url="index.cfm?dir=#URL.dir#&action=delete&folder=#uploadFolder#" addtoken="false" />
+					<cflocation url="index.cfm?dir=#URL.dir#&folder=#uploadFolder#" addtoken="false" />
 				<cfelse>
 					Directory doesn't exist.
 					<pre>

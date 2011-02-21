@@ -37,6 +37,7 @@
 				type: "post",
 				data: {
 					fileName: $("input[name=fileName]").val(),
+					dir: $("input[name=dir]").val(),
 					fileContent: $("textarea[name=fileContent]").val(),
 					originalFile: $("input[name=originalFile]").val(),
 					folder: $("input[name=folder]").val(),
@@ -44,7 +45,11 @@
 				},
 				url: window.location.href,
 				success: function(){
-					$(".message").removeClass("pending").addClass("success").html($("input[name=fileName]").val() + " saved.").animate({opacity:0}, 5000);
+					if($("input[name=dir]").val()) {
+						window.location = window.location.href + "/" + $("input[name=dir]").val();
+					} else {
+						$(".message").removeClass("pending").addClass("success").html($("input[name=fileName]").val() + " saved.").animate({opacity:0}, 5000);
+					}
 				},
 				error: function(){
 					$(".message").removeClass("pending").addClass("error").html("Save failed!").animate({opacity:0}, 10000);

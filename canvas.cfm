@@ -123,8 +123,8 @@
 				
 				context.font = fontSize * 7 / 10 + "px sans-serif";
 				
-				var renderPosition = { x: lineMarginWidth + marginLeft * 2 - scrollPosition.x,
-				                       y: row * lineHeight + 1/2 * lineHeight - scrollPosition.y };
+				var renderPosition = { x: lineMarginWidth + marginLeft * 2 - scrollPosition.x + $(canvas).offset().right,
+				                       y: row * lineHeight + 1/2 * lineHeight - scrollPosition.y + $(canvas).offset().left };
 				
 				context.fillText(row/1+1, lineMarginWidth, renderPosition.y);
 
