@@ -18,8 +18,11 @@
 <cfif URL.file NEQ "">
 	<cffile file="#expandPath(URL.file)#" variable="f" action="read"/>
 <cfelse>
-	<cfset f.contents = "">
+	<cfset f = "">
 </cfif>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="http://halffastsolutions.com/javascripts/jquery/jquery-mousewheel.min.js"></script>
 
 <script>
 	var file = { contents: <cfoutput>#serializeJSON(f)#</cfoutput> };
@@ -27,8 +30,6 @@
 </script>
 
 <canvas></canvas>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="http://halffastsolutions.com/javascripts/jquery/jquery-mousewheel.min.js"></script>
 
 <script>
 
@@ -123,9 +124,9 @@
 				
 				context.font = fontSize * 7 / 10 + "px sans-serif";
 				
-				var renderPosition = { x: lineMarginWidth + marginLeft * 2 - scrollPosition.x + $(canvas).offset().right,
-				                       y: row * lineHeight + 1/2 * lineHeight - scrollPosition.y + $(canvas).offset().left };
-				
+				var renderPosition = { x: lineMarginWidth + marginLeft * 2 - scrollPosition.x + $(canvas).offset().left,
+				                       y: row * lineHeight + 1/2 * lineHeight - scrollPosition.y + $(canvas).offset().top };
+				console.log("renderPosition", renderPosition);
 				context.fillText(row/1+1, lineMarginWidth, renderPosition.y);
 
 				context.textAlign = "left";
