@@ -9,7 +9,6 @@
 
 		// navigator click handler
 		$("[id$=-navigator]").delegate("li", "click", function(){
-console.log(this);
 			// directory action
 			if($(this).hasClass("dir")) {
 				// if there are no children, see if there should be any from the server
