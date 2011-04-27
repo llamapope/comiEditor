@@ -8,7 +8,7 @@
 		// set up the navigator event handlers
 
 		// navigator click handler
-		$("[id$=-navigator]").delegate("li", "click", function(){
+		$("[id$=-navigator]").delegate("li", "dblclick	", function(){
 			// directory action
 			if($(this).hasClass("dir")) {
 				// if there are no children, see if there should be any from the server
@@ -40,15 +40,20 @@
 					$(this).children(".ui-icon").toggleClass("ui-icon-folder-collapsed ui-icon-folder-open").siblings("ul").toggle();
 					// TODO: refresh folder! Don't want it to collapse or lose any children nodes though...
 				}
+			// file action
 			} else if($(this).hasClass("file")) {
 				var path = "/";
 
 				$(this).parents(".dir").each(function(){
 					path = "/" + $(">span", this).text() + path;
 				});
-				
-				$("#comiEditor-editor").attr("params", "file=" + path + $(">span", this).text());
+
+				var filePath = path + $(">span", this).text();				
+
+				$("#comiEditor-editor").attr("params", "file=" + filePath);
 				$.loadView("#comiEditor-editor");
+
+				window.location.hash = "file=" + filePath;
 			}
 
 			// only one file/folder should ever be selected (unless control or shift is used...)
@@ -59,6 +64,12 @@
 			$(this).addClass("selected");
 		});
 	});
+
+	document.onselectstart = function (e) {
+		if ($(e.srcElement).parents("[unselectable]").length) {
+			return false;
+		}
+	};
 
 	$.loadView = function(selector) {
 		$(selector).each(function(){
@@ -74,6 +85,7 @@
 						t.find(".file").prepend($("<div></div>").addClass("ui-icon ui-icon-document"));
 						t.find("li").prepend($("<div></div>").addClass("status"));
 
+						t.attr("unselectable", "on").css({MozUserSelect:"none",webkitUserSelect:"none"});
 	        				$(this).append(t);
 
 						if(!$(this).parents().hasClass("panel")) {
