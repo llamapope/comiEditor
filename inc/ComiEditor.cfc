@@ -29,6 +29,20 @@
 		<cfreturn editor.html>
 	</cffunction>
 
+	<cffunction name="save" access="remote">
+		<cfargument name="file" required="true">
+		<cfargument name="fileContents" required="true">
+
+		<cfset editor = variables.editor>
+
+		<cfset editor.file = fixPath(arguments.file)>
+		<cfset editor.fileContents = arguments.fileContents>
+
+		<cfsavecontent variable="editor.html"><cfinclude template="views/editor/save.cfm"></cfsavecontent>
+
+		<cfreturn editor.html>
+	</cffunction>
+
 	<cffunction name="fixPath" output="false">
 		<cfargument name="path" required="true">
 		<!--- force it to start at the root... for now. I don't want it to default to this folder if no path is supplied. Also, strip all extra slashes. --->

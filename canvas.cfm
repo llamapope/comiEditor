@@ -6,7 +6,7 @@
 </cfif>
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="http://halffastsolutions.com/javascripts/jquery/jquery-mousewheel.min.js"></script>
+<script src="/ce/scripts/jquery-mousewheel.min.js"></script>
 
 <script>
 	var file = { contents: <cfoutput>#serializeJSON(f)#</cfoutput> };
