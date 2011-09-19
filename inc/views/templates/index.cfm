@@ -24,7 +24,7 @@
 </cfoutput>
 <div id="comiEditor">
 	<div id="comiEditor-mainMenu">Main Menu</div>
-    <div id="comiEditor-userMenu">User Menu</div>
+    <div id="comiEditor-userMenu"><a href="/ce/index_old.cfm?logout">Logout</a></div>
 	<div id="comiEditor-navigator"></div>
 	<div id="comiEditor-tasks">tasks</div>
 	<div id="comiEditor-shortcuts">shortcuts</div>
