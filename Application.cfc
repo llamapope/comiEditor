@@ -6,8 +6,8 @@
 	<cfset this.scriptProtect = "none" />
 
 	<cffunction name="onrequest">
-		<cfargument name="targetPage" />
-
+		<cfargument name="targetPage" /><cfsilent>
+        <cfsavecontent variable="htmloutput">
 		<cfparam name="FORM.userName" default="" />
 		<cfparam name="FORM.password" default="" />
 		<cfparam name="SESSION.comiEditor.isAuthenticated" default="false" />
@@ -46,5 +46,6 @@
 		<cfelse>
 			<cfinclude template="inc/views/editor/login.cfm" />
 		</cfif>
-	</cffunction>
+        </cfsavecontent>
+	</cfsilent><cfcontent reset="true"><cfoutput>#trim(htmloutput)#</cfoutput></cffunction>
 </cfcomponent>

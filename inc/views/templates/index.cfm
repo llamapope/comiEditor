@@ -23,7 +23,7 @@
 </style>
 </cfoutput>
 <div id="comiEditor">
-	<div id="comiEditor-mainMenu">Main Menu</div>
+	<div id="comiEditor-mainMenu">Main Menu <a href="/ce/index_old.cfm" target="_blank">Clunky Interface</a></div>
     <div id="comiEditor-userMenu"><a href="/ce/index_old.cfm?logout">Logout</a></div>
 	<div id="comiEditor-navigator"></div>
 	<div id="comiEditor-tasks">tasks</div>

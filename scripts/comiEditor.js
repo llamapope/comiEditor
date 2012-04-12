@@ -214,5 +214,3 @@
         return (minLength > 0 ? string : '') + Array(1 + Math.abs(minLength) - Math.min(string.length, Math.abs(minLength))).join(padString) + (minLength < 0 ? string : '');
     }
 })(jQuery);
-
-

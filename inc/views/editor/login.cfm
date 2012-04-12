@@ -11,3 +11,7 @@
 	    <input type="submit" value="Let me in!" />
     </form>
 </cfoutput>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script>
+    $("[name=username]").focus();
+</script>
