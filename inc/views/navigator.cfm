@@ -21,7 +21,7 @@
 	<cfinclude template="editor/upload.cfm" />
 	<cfabort />
 </cfif>
-<cfset editorScript="index.cfm" />
+<cfset editorScript="index_old.cfm" />
 
 <cfsavecontent variable="htmlHead">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>

@@ -1,4 +1,4 @@
-body { padding: 0; margin: 0; height: 100%; width: 100%; overflow: hidden; }
+body { padding: 0; margin: 0; height: 100%; width: 100%; overflow: hidden; font-size: 16px; }
 #comiEditor { top: 0; left: 0; right: 0; bottom: 0; font-size: .9em; color: #222; }
 body { font-family: arial; }
 
@@ -27,3 +27,7 @@ body { font-family: arial; }
     #comiEditor-console li:focus, #comiEditor-console li:last-child { background: #000; color: #fff; }
     #comiEditor-console time { color: #666; }
     #comiEditor-console a { color: #999; }
+    
+.ui-widget.ui-dialog { font-size: 12px; }
+
+#navigationMenu { font-size: 14px; }

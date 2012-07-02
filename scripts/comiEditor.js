@@ -6,11 +6,99 @@
 		$(":not([id*=-])").each(function(){
 			$.loadView("[id^=" + this.id + "-]");
 		});
+        
+        // set up the navigator event handlers
+        $("[id$=-navigator]").on("contextmenu", "li", function(e){
+            $("#navigationMenu").remove();
+            
+            var menu = $("<nav id='navigationMenu'><ul><li>New Folder*</li><li><hr></li><li>Rename*</li><li>Delete*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
 
-		// set up the navigator event handlers
+            var path = "";
+            
+            if($(this).is(".dir")) {
+                path = "/" + $(this).children("span").text().trim();
+            }
+            
+            // construct the path by concatenating all parent directory nodes' path attributes
+            $(this).parents("li").each(function(){
+				path = "/" + $(this).attr("params").replace(/^.*path=([^&]+)$/, "$1") + path;
+			});
+            
+            if(path === '') {
+                path = '/';
+            }
 
+            var newFileDialog = $('<form id="newFile" method="post" action="/ce/inc/ComiEditor.cfc?method=newFile"><label>File Name <input type="text" name="fileName" value="index.cfm"></label><input type="hidden" name="folder" value="' + path + '"></form>');
+            
+            var newFileItem = $("<li class='newFile'>New File</li>").prependTo(menu.find("ul")).on('click', function(){
+                $(newFileDialog).dialog({
+                    title: 'New File',
+                    modal: true,
+                    buttons: {
+                        Cancel: function() {
+                            $(this).dialog('destroy');
+                        }, Create: function() {
+                            var now = new Date(); 
+                            var then = "<time>" + now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDay()) + 
+                                ' '+pad(now.getHours())+':'+pad(now.getMinutes())+":"+pad(now.getSeconds()) + "</time>"; 
+                            
+                            $("[id$=-console]").append($("<li/>").html(then + ' creating file...'));
+                            $("[id$=-console] li:last").attr("tabindex", "-1").focus();
+                            
+                            newFileDialog.on("submit", function(){
+                                console.log("new file");
+                                $.ajax({
+                                    url: $(this).prop("action"),
+                                    method: 'POST',
+                                    data: $(this).serialize(),
+                                    success: function(data) {
+                                        var timeDiff = new Date().getTime() - now.getTime();
+                                        var editor = ace.edit("editor");
+                                        
+                                        if(timeDiff < 1000) {
+                                            timeDiff += "ms";
+                                        } else {
+                                            timeDiff = timeDiff / 1000 + "s";
+                                        }
+                                       
+                                        $("[id$=-console] li:last").append(" folder created <time>" + timeDiff + "</time>").focus();
+                                        editor.focus();
+                                    },
+                                    error: function() {
+                                        var timeDiff = new Date().getTime() - now.getTime();
+                                        var editor = ace.edit("editor");
+                                        
+                                        if(timeDiff < 1000) {
+                                            timeDiff += "ms";
+                                        } else {
+                                            timeDiff = timeDiff / 1000 + "s";
+                                        }
+                                       
+                                        $("[id$=-console] li:last").append(" failed <time>" + timeDiff + "</time>").focus();
+                                        editor.focus();
+                                    }
+                                });
+                                
+                                return false;
+                            });
+                            
+                            $(this).closest('.ui-dialog').find('form').submit();
+                            $(this).dialog('destroy');
+                        }
+                    }
+                });
+                
+            });
+
+            menu.css({position: 'absolute', top: e.pageY, left: e.pageX, background: '#eee', border: 'solid 1px #ccc', padding: '5px 10px', zIndex: 999999, boxShadow: '0 0 5px #ddd' });
+            
+            $("ul", menu).css({ margin: 0, padding: 0, listStyle: 'none' });
+            $("li", menu).css({ cursor: 'pointer' });
+            return false;
+		});
+        
 		// navigator click handler
-		$("[id$=-navigator]").delegate("li", "click", function(){
+		$("[id$=-navigator]").on("click", "li", function(){
             // variable to store the path into
             var path = "";
             
@@ -18,6 +106,7 @@
 			if($(this).hasClass("dir")) {
 				// if there are no children, see if there should be any from the server
 				if(!$(this).children("ul").length) {
+                    console.log("loading contents of folder...");
 					path = "";
 
 					// store this node's contribution to the path
@@ -40,6 +129,7 @@
 					// reset params to just this node's contribution (current folder name)
 					$(this).attr("params", $(this).text());
 				} else {
+                    console.log("toggling view of folder...");
 					// just open the collapsed folder structure
 					$(this).children(".ui-icon").toggleClass("ui-icon-folder-collapsed ui-icon-folder-open").siblings("ul").toggle();
 					// TODO: refresh folder! Don't want it to collapse or lose any children nodes though...
@@ -52,13 +142,10 @@
 					path = "/" + $(">span", this).text() + path;
 				});
 
-				var filePath = path + $(">span", this).text();				
-
-				$("#comiEditor-editor").attr("params", "file=" + filePath);
-				$("#comiEditor-editor").empty();
-				$.loadView("#comiEditor-editor");
-
+				var filePath = path + $(">span", this).text();
 				window.location.hash = "file=" + filePath;
+                
+                $(window).trigger("hashchange");
 			}
 
 			// only one file/folder should ever be selected (unless control or shift is used...)
@@ -67,13 +154,30 @@
 
 			// select the current item
 			$(this).addClass("selected");
+            
+            // close the contextmenu if it is there
+            $("#navigationMenu").remove();
+            
+            return false;
 		});
         
         if(window.location.hash) {
             var fileName = window.location.hash.replace(/#.*file=\/?([^&]+).*/, '$1');
             filePathArray = fileName.split('/');
         }
+        
+        $(window).on("hashchange", function(){
+            var filePath = window.location.hash.replace(/#.*file=(\/?[^&]+.*)/, '$1');
+            
+            $("#comiEditor-editor").attr("params", "file=" + filePath);
+            $("#comiEditor-editor").empty();
+			$.loadView("#comiEditor-editor");
+        }).trigger("hashchange");
 	});
+    
+    $("body").on("click", function(){
+        $("#navigationMenu").remove();
+    });
 
 	// cancel text selection on any element that has the unslectable attribute on any of it's parents
 	document.onselectstart = function (e) {
@@ -178,7 +282,7 @@
                                 var firstNode = filePathArray.shift();
                                 $("li span:contains("+ firstNode +")", this).each(function(){
                                     if($(this).text() == firstNode) {
-                                        $(this).click();
+                                        $(this).trigger("click");
                                     }
                                 });
                             }

@@ -37,10 +37,12 @@
 		<cfelse>
 			<cffile action="write" output="#FORM.fileContent#" charset="utf-8" file="#expandPath('/')##uploadFolder#/#FORM.fileName#" />
 			<cfif FORM.originalFile NEQ "" AND lCase(FORM.originalFile) NEQ lCase(FORM.fileName)>
-				<cfif fileExists("#expandPath('/')##uploadFolder#/#FORM.originalFile#")>
+				<cfif FORM.originalFile NEQ '' AND fileExists("#expandPath('/')##uploadFolder#/#FORM.originalFile#")>
 					<cffile action="delete" file="#expandPath('/')##uploadFolder#/#FORM.originalFile#" />
 				</cfif>
 			</cfif>
+            <cfdump var="#form#"><cfdump var="#url#">
+            <cfabort>
 			<cflocation url="index.cfm?file=#FORM.fileName#&folder=#uploadFolder#" addtoken="false" />
 		</cfif>
 	<cfelseif URL.file NEQ "">

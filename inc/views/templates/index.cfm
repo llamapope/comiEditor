@@ -10,7 +10,8 @@
 <script src="#editor.scripts#/ace/theme-textmate.js" type="text/javascript" charset="utf-8"></script>
 <script src="#editor.scripts#/ace/mode-html.js" type="text/javascript" charset="utf-8"></script>
 
-<script src="#editor.scripts#/jquery.js" type="text/javascript"></script>
+<!---<script src="#editor.scripts#/jquery.js" type="text/javascript"></script>--->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 <script src="#editor.scripts#/jquery-ui.js" type="text/javascript"></script>
 <script src="#editor.scripts#/jquery-contextmenu.js" type="text/javascript"></script>
 <script src="#editor.scripts#/comiEditor.js" type="text/javascript"></script>

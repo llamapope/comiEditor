@@ -11,5 +11,6 @@
 		$.fn.ide = function(options, more) {
 			console.log(ide(options));
 		};
+        
 	});
 })(jQuery);
