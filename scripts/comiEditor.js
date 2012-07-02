@@ -145,7 +145,9 @@
 				var filePath = path + $(">span", this).text();
 				window.location.hash = "file=" + filePath;
                 
-                $(window).trigger("hashchange");
+                $("#comiEditor-editor").attr("params", "file=" + filePath);
+                $("#comiEditor-editor").empty();
+                $.loadView("#comiEditor-editor", false);
 			}
 
 			// only one file/folder should ever be selected (unless control or shift is used...)
@@ -187,7 +189,9 @@
 	};
 
 	// comiEditor loadView function
-	$.loadView = function(selector) {
+	$.loadView = function(selector, attachToDocument) {
+        if(attachToDocument!==undefined) { attachToDocument = true; }
+        
 		$(selector).each(function(){
 			var viewName = getViewName(this);
 
@@ -201,7 +205,11 @@
 						t.find(".file").prepend($("<div></div>").addClass("ui-icon ui-icon-document"));
 						t.find("li").prepend($("<div></div>").addClass("status"));
 
-						$(this).append(t);
+                        if($(this).is("li")) {
+                            $(this).append(t);
+                        } else {
+                            $(this).html(t);
+                        }
 
 						if(t.is("#editor")) {
 							var editor = ace.edit("editor");
@@ -226,9 +234,7 @@
 
 							editor.focus();
 
-							var canon = require('pilot/canon');
-
-							canon.addCommand({
+							editor.commands.addCommand({
 								name: 'comiEditorSave',
 								bindKey: {
 									win: 'Ctrl-S',
