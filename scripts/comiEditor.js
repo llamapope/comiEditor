@@ -7,13 +7,72 @@
 			$.loadView("[id^=" + this.id + "-]");
 		});
         
+        $("body").on("submit", ".fileContextForm", function(){
+            var now = new Date(); 
+            var then = "<time>" + now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDay()) + 
+                ' '+pad(now.getHours())+':'+pad(now.getMinutes())+":"+pad(now.getSeconds()) + "</time>"; 
+            
+            var fileName = $("[name=fileName]", this).val();
+            var filePath = $("[name=folder]", this).val() + "/" + fileName;
+            
+            $("[id$=-console]").append($("<li/>").html(then + ' creating file <a href="#file=' + filePath + '">' + filePath + '</a>... '));
+            $("[id$=-console] li:last").attr("tabindex", "-1").focus();
+            
+            $.ajax({
+                url: $(this).prop("action"),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(data) {
+                    var timeDiff = new Date().getTime() - now.getTime();
+                    var editor = ace.edit("editor");
+                    
+                    if(timeDiff < 1000) {
+                        timeDiff += "ms";
+                    } else {
+                        timeDiff = timeDiff / 1000 + "s";
+                    }
+                   
+                    $("[id$=-console] li:last").append(" " + $(data).text() + " <time>" + timeDiff + "</time>").focus();
+                    editor.focus();
+                    
+                    var selectedFolder = $("[id$=-navigator] .selected");
+                    
+                    if(selectedFolder.is(".file")) {
+                        selectedFolder = selectedFolder.closest(".dir");
+                    }
+                    
+                    var newFileLink = $("[id$=-console] li:last a");
+                    window.location.hash = newFileLink.attr("href");
+                },
+                error: function(data) {
+                    var timeDiff = new Date().getTime() - now.getTime();
+                    var editor = ace.edit("editor");
+                    
+                    if(timeDiff < 1000) {
+                        timeDiff += "ms";
+                    } else {
+                        timeDiff = timeDiff / 1000 + "s";
+                    }
+                    
+                    $("[id$=-console] li:last").append($(data.responseText).text() + " <time>" + timeDiff + "</time>").focus();
+                    editor.focus();
+                },
+                context: this
+            });
+            
+            $(this).dialog('destroy');
+            
+            return false;
+        });
+        
         // set up the navigator event handlers
         $("[id$=-navigator]").on("contextmenu", "li", function(e){
             $("#navigationMenu").remove();
             
-            var menu = $("<nav id='navigationMenu'><ul><li>New Folder*</li><li><hr></li><li>Rename*</li><li>Delete*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
+            var menu = $("<nav id='navigationMenu'><ul><li class='newFile'>New File</li><li>New Folder*</li><li><hr></li><li class='rename'>Rename*</li><li>Delete*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
 
             var path = "";
+            var $this = this;
             
             if($(this).is(".dir")) {
                 path = "/" + $(this).children("span").text().trim();
@@ -28,66 +87,38 @@
                 path = '/';
             }
 
-            var newFileDialog = $('<form id="newFile" method="post" action="/ce/inc/ComiEditor.cfc?method=newFile"><label>File Name <input type="text" name="fileName" value="index.cfm"></label><input type="hidden" name="folder" value="' + path + '"></form>');
+            var contextFormDialog = $('<form class="fileContextForm" method="post" action="/ce/inc/ComiEditor.cfc"><input type="hidden" name="returnFormat" value="plain"/><input type="hidden" name="method" class="action"/><input type="hidden" name="folder" value="' + path + '"/></form>');
             
-            var newFileItem = $("<li class='newFile'>New File</li>").prependTo(menu.find("ul")).on('click', function(){
-                $(newFileDialog).dialog({
-                    title: 'New File',
+            $("li", menu).on('click', function(){
+                var action = $(this).attr("class");
+                
+                if( action === 'newFile') {
+                    $('<label>File Name <input type="text" name="fileName" value="index.cfm"></label>').appendTo(contextFormDialog);                
+                } else if( action === 'rename' ) {
+                    if($($this).hasClass("file")) {
+                        action += "File";
+                        $('<label>File Name <input type="text" name="fileName" value="' + $($this).children("span").text() + '"></label><input type="hidden" name="originalFileName" value="' + $($this).children("span").text() + '">').appendTo(contextFormDialog);
+                    }
+                }
+                
+                console.log(contextFormDialog);
+                
+                $(".action", contextFormDialog).val(action);
+                
+                $(contextFormDialog).dialog({
+                    title: $(this).text(),
                     modal: true,
                     buttons: {
                         Cancel: function() {
                             $(this).dialog('destroy');
-                        }, Create: function() {
-                            var now = new Date(); 
-                            var then = "<time>" + now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDay()) + 
-                                ' '+pad(now.getHours())+':'+pad(now.getMinutes())+":"+pad(now.getSeconds()) + "</time>"; 
-                            
-                            $("[id$=-console]").append($("<li/>").html(then + ' creating file...'));
-                            $("[id$=-console] li:last").attr("tabindex", "-1").focus();
-                            
-                            newFileDialog.on("submit", function(){
-                                console.log("new file");
-                                $.ajax({
-                                    url: $(this).prop("action"),
-                                    method: 'POST',
-                                    data: $(this).serialize(),
-                                    success: function(data) {
-                                        var timeDiff = new Date().getTime() - now.getTime();
-                                        var editor = ace.edit("editor");
-                                        
-                                        if(timeDiff < 1000) {
-                                            timeDiff += "ms";
-                                        } else {
-                                            timeDiff = timeDiff / 1000 + "s";
-                                        }
-                                       
-                                        $("[id$=-console] li:last").append(" folder created <time>" + timeDiff + "</time>").focus();
-                                        editor.focus();
-                                    },
-                                    error: function() {
-                                        var timeDiff = new Date().getTime() - now.getTime();
-                                        var editor = ace.edit("editor");
-                                        
-                                        if(timeDiff < 1000) {
-                                            timeDiff += "ms";
-                                        } else {
-                                            timeDiff = timeDiff / 1000 + "s";
-                                        }
-                                       
-                                        $("[id$=-console] li:last").append(" failed <time>" + timeDiff + "</time>").focus();
-                                        editor.focus();
-                                    }
-                                });
-                                
-                                return false;
-                            });
-                            
+                        }, OK: function() {
                             $(this).closest('.ui-dialog').find('form').submit();
-                            $(this).dialog('destroy');
                         }
+                    },
+                    open: function(){
+                        $(":text:first", this).focus().select();
                     }
                 });
-                
             });
 
             menu.css({position: 'absolute', top: e.pageY, left: e.pageX, background: '#eee', border: 'solid 1px #ccc', padding: '5px 10px', zIndex: 999999, boxShadow: '0 0 5px #ddd' });
@@ -98,7 +129,7 @@
 		});
         
 		// navigator click handler
-		$("[id$=-navigator]").on("click", "li", function(){
+		$("[id$=-navigator]").on("click", "li", function(e, callback){
             // variable to store the path into
             var path = "";
             
@@ -106,7 +137,6 @@
 			if($(this).hasClass("dir")) {
 				// if there are no children, see if there should be any from the server
 				if(!$(this).children("ul").length) {
-                    console.log("loading contents of folder...");
 					path = "";
 
 					// store this node's contribution to the path
@@ -118,21 +148,19 @@
 					});
 
 					// set the path paramater and add the folder icon
-					$(this).attr("params", "path="+path).children(".ui-icon").toggleClass("ui-icon-folder-collapsed ui-icon-folder-open");
+					$(this).attr("params", "path="+path).children(".ui-icon").removeClass("ui-icon-folder-collapsed").addClass("ui-icon-folder-open");
 
 					// set the status indicator to loading
 					$(this).children(".status").addClass("loading");
 
 					// fire off the ajax request to load the children of this node
-					$.loadView(this);
+					$.loadView(this, true, callback);
 
 					// reset params to just this node's contribution (current folder name)
 					$(this).attr("params", $(this).text());
 				} else {
-                    console.log("toggling view of folder...");
 					// just open the collapsed folder structure
-					$(this).children(".ui-icon").toggleClass("ui-icon-folder-collapsed ui-icon-folder-open").siblings("ul").toggle();
-					// TODO: refresh folder! Don't want it to collapse or lose any children nodes though...
+					$(this).addClass("ui-icon-folder-collapsed").removeClass("ui-icon-folder-open").find("ul").remove();
 				}
 			// file action
 			} else if($(this).hasClass("file")) {
@@ -163,15 +191,11 @@
             return false;
 		});
         
-        if(window.location.hash) {
-            var fileName = window.location.hash.replace(/#.*file=\/?([^&]+).*/, '$1');
-            filePathArray = fileName.split('/');
-        }
-        
         $(window).on("hashchange", function(){
-            var filePath = window.location.hash.replace(/#.*file=(\/?[^&]+.*)/, '$1');
+            var filePath = window.location.hash.replace(/#.*file=\/?([^&]+).*/, '$1');
+            filePathArray = filePath.split('/');
             
-            $("#comiEditor-editor").attr("params", "file=" + filePath);
+            $("#comiEditor-editor").attr("params", "file=/" + filePath);
             $("#comiEditor-editor").empty();
 			$.loadView("#comiEditor-editor");
         }).trigger("hashchange");
@@ -189,7 +213,7 @@
 	};
 
 	// comiEditor loadView function
-	$.loadView = function(selector, attachToDocument) {
+	$.loadView = function(selector, attachToDocument, callback) {
         if(attachToDocument!==undefined) { attachToDocument = true; }
         
 		$(selector).each(function(){
@@ -234,7 +258,7 @@
 
 							editor.focus();
 
-							editor.commands.addCommand({
+							editor.commands.addCommands([{
 								name: 'comiEditorSave',
 								bindKey: {
 									win: 'Ctrl-S',
@@ -278,7 +302,21 @@
 										}
 									});
 								}
-							});
+							},
+                            {
+                                name: 'cfoutput',
+                                bindKey: {
+                                    win: 'Ctrl-Alt-O',
+                                    mac: 'Option-Alt-O',
+                                    sender: 'editor'
+                                },
+                                exec: function(editor, args, request) {
+                                    var range = editor.getSelectionRange();
+                                    var text = editor.session.getTextRange(range);
+                                    
+                                    editor.session.replace(range, "<cfoutput>"+text+"</cfoutput>");
+                                }
+                            }]);
 						}
 						else {
 							t.attr("unselectable", "on").css({MozUserSelect:"none",webkitUserSelect:"none"});
@@ -300,7 +338,13 @@
 						}
 						
 						$(this).children(".status.loading").removeClass("loading");
-					}
+                        
+                        // fire the callback
+                        if(typeof(callback) === "function") {
+                            callback();
+                        }
+					} // success
+                    
 				});
 			}
 		});

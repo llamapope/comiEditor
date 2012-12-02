@@ -38,7 +38,7 @@
         <cfset editor = variables.editor>
 
 		<cfset editor.path = fixPath(arguments.path)>
-		<cfsavecontent variable="editor.html"><cfinclude template="views/editor/#fixPath(arguments.view)#.cfm"></cfsavecontent>
+		<cfsavecontent variable="editor.html"><cfinclude template="views/editor/#fixFileName(arguments.view)#.cfm"></cfsavecontent>
 
 		<cfreturn editor.html>
 	</cffunction>
@@ -59,14 +59,39 @@
         </cfif>
 	</cffunction>
 
-	<cffunction name="fixPath" output="false">
+	<cffunction name="fixPath" output="false" access="remote">
 		<cfargument name="path" required="true">
+        
         <cfset requireAuth()>
-		<!--- force it to start at the root... for now. I don't want it to default to this folder if no path is supplied. Also, strip all extra slashes. --->
-		<cfset arguments.path = rereplace("/#arguments.path#", "/+", "/", "all")>
-
+        
+        <cfif reFindNoCase("^(/(\.?[a-z0-9-_ ]+)*)+/?$", arguments.path) EQ 0>
+            <cfheader statuscode="409" statustext="Conflict">
+            
+            <cfdump var="#arguments#">
+            <cfoutput><h1>invalid path specified</h1></cfoutput>
+            <cfabort>
+        </cfif>
+        
 		<!--- don't allow any number of '.' characters before a slash. Verify this is sufficient to keep you from exposing your entire server's file system! --->
-		<cfreturn rereplace(arguments.path, "\.+/", "/", "all")>
+		<cfset arguments.path = rereplace(arguments.path, "\.+/", "/", "all")>
+
+		<!--- force it to start at the root... for now. I don't want it to default to this folder if no path is supplied. Also, add a slash on the end, and then strip all extra slashes. --->
+		<cfreturn rereplace("/#arguments.path#/", "/+", "/", "all")>
+	</cffunction>
+    
+	<cffunction name="fixFileName" output="false" access="remote">
+		<cfargument name="fileName" required="true">
+        
+        <cfset requireAuth()>
+        
+		<cfif reFindNoCase("^(\.?[a-z0-9-_ ]+)+$", arguments.fileName) EQ 0>
+            <cfheader statuscode="409" statustext="Conflict">
+            <cfoutput><h1>invalid filename</h1></cfoutput>
+            <cfabort>
+        </cfif>
+
+		<!--- get rid of any leading or trailing spaces --->
+		<cfreturn trim(arguments.fileName)>
 	</cffunction>
 
 	<cffunction name="open" access="remote" output="false">
@@ -85,20 +110,60 @@
 	</cffunction>
     
     <cffunction name="newFile" access="remote">
+        <cfargument name="folder" required="true">
+        <cfargument name="fileName" required="true">
+        
         <cfset requireAuth()>
         
-        <cfif directoryExists(expandPath(FORM.folder))>
-            <cfif fileExists('#expandPath(FORM.folder)#/#FORM.fileName#')>
+        <cfset arguments.folder = fixPath(arguments.folder)>
+        <cfset arguments.fileName = fixFileName(arguments.fileName)>
+        
+        <cfif directoryExists(expandPath(arguments.folder))>
+            <cfif fileExists('#expandPath(arguments.folder)#/#arguments.fileName#')>
                 <cfheader statuscode="409" statustext="Conflict">
-                <cfoutput><h1>File already exists</h1></cfoutput>
+                <cfoutput><h1>file already exists</h1></cfoutput>
                 <cfabort>
             <cfelse>
-                <cffile action="write" output="" charset="utf-8" file="#expandPath(FORM.folder)#/#FORM.fileName#">
+                <cffile action="write" output="" charset="utf-8" file="#expandPath(arguments.folder)#/#arguments.fileName#">
             </cfif>
         <cfelse>
             <cfheader statuscode="409" statustext="Conflict">
             <cfoutput><h1>Folder does not exists</h1></cfoutput>
             <cfabort>
         </cfif>
+        
+        <cfreturn "<h2>file created</h2>">
+    </cffunction>
+    
+    <cffunction name="renameFile" access="remote">
+        <cfargument name="folder" required="true">
+        <cfargument name="originalFileName" required="true">
+        <cfargument name="fileName" required="true">
+        
+        <cfset requireAuth  ()>
+        
+        <cfset arguments.folder = fixPath(arguments.folder)>
+        <cfset arguments.originalFileName = fixFileName(arguments.originalFileName)>
+        <cfset arguments.fileName = fixFileName(arguments.fileName)>
+        
+        <cfif directoryExists(expandPath(arguments.folder))>
+            <cfif fileExists('#expandPath(arguments.folder)#/#arguments.fileName#')>
+                <cfheader statuscode="409" statustext="Conflict">
+                <cfoutput><h1>file already exists</h1></cfoutput>
+                <cfabort>
+            <cfelseif fileExists('#expandPath(arguments.folder)#/#arguments.originalFileName#')>
+                <cffile action="rename" source="#expandPath(arguments.folder)#/#arguments.originalFileName#" destination="#expandPath(arguments.folder)#/#arguments.fileName#">
+            <cfelse>
+                <cfheader statuscode="409" statustext="Conflict">
+                <cfoutput><h1>file does not exists</h1></cfoutput>
+                <cfabort>
+            </cfif>
+        <cfelse>
+            <cfheader statuscode="409" statustext="Conflict">
+            <cfoutput><h1>folder does not exists</h1></cfoutput>
+            <cfabort>
+        </cfif>
+        
+        <cfreturn "<h2>file renamed</h2>">
     </cffunction>
 </cfcomponent>
