@@ -1,7 +1,7 @@
 (function($){
     var filePathArray = [];
     
-	$(function() {
+    $(function() {
 		// load each panel of the editor
 		$(":not([id*=-])").each(function(){
 			$.loadView("[id^=" + this.id + "-]");
@@ -307,7 +307,7 @@
                                 name: 'cfoutput',
                                 bindKey: {
                                     win: 'Ctrl-Alt-O',
-                                    mac: 'Option-Alt-O',
+                                    mac: 'Ctrl-Command-O',
                                     sender: 'editor'
                                 },
                                 exec: function(editor, args, request) {
@@ -315,6 +315,48 @@
                                     var text = editor.session.getTextRange(range);
                                     
                                     editor.session.replace(range, "<cfoutput>"+text+"</cfoutput>");
+                                }
+                            },
+                            {
+                                name: 'cfdump',
+                                bindKey: {
+                                    win: 'Ctrl-Alt-D',
+                                    mac: 'Ctrl-Shift-D',
+                                    sender: 'editor'
+                                },
+                                exec: function(editor, args, request) {
+                                    var range = editor.getSelectionRange();
+                                    var text = editor.session.getTextRange(range);
+                                    
+                                    editor.session.replace(range, "<cfdump var='#"+text+"#'>");
+                                }
+                            },
+                            {
+                                name: 'cfdumpabort',
+                                bindKey: {
+                                    win: 'Ctrl-Shift-A',
+                                    mac: 'Ctrl-Shift-A',
+                                    sender: 'editor'
+                                },
+                                exec: function(editor, args, request) {
+                                    var range = editor.getSelectionRange();
+                                    var text = editor.session.getTextRange(range);
+                                    
+                                    editor.session.replace(range, "<cfdump var='#"+text+"#' abort>");
+                                }
+                            },
+                            {
+                                name: 'cfcomment',
+                                bindKey: {
+                                    win: 'Ctrl-Alt-M',
+                                    mac: 'Ctrl-Command-M',
+                                    sender: 'editor'
+                                },
+                                exec: function(editor, args, request) {
+                                    var range = editor.getSelectionRange();
+                                    var text = editor.session.getTextRange(range);
+                                    
+                                    editor.session.replace(range, "<!--- "+text+" --->");
                                 }
                             }]);
 						}

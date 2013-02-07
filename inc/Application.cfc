@@ -1,5 +1,5 @@
 <cfcomponent>
-	<cfset this.name = "comiEditor">
+	<cfset this.name = "halfCMS">
 	<cfset this.sessionManagement = "true" />
 	<cfset this.sessionTimeout=CreateTimeSpan(0,7,0,0) />
 	<cfset this.clientStorage = "cookie" />

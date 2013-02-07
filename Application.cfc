@@ -1,5 +1,5 @@
 <cfcomponent output="false" scriptprotect="none">
-	<cfset this.name = "comiEditor" />
+	<cfset this.name = "halfCMS" />
 	<cfset this.sessionManagement = "true" />
 	<cfset this.sessionTimeout=CreateTimeSpan(0,7,0,0) />
 	<cfset this.clientStorage = "cookie" />
@@ -13,12 +13,22 @@
 		<cfparam name="SESSION.comiEditor.isAuthenticated" default="false" />
 	
 		<cfif isDefined("URL.logout")>
-			<cfset SESSION.comiEditor.isAuthenticated = false />
+            <!--- logout of both the editor and the CMS --->
+			<cfset structDelete(SESSION, "halfCMS")>
+            <cfset structDelete(SESSION, "comiEditor")>
+            
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfif>
 
 		<cfinclude template="inc/config/settings.cfm" />
 		<cfinclude template="inc/functions.cfm" />
+        
+        <!--- auto login from CMS --->
+        <cfif structKeyExists(SESSION, "halfCMS")>
+            <cfset SESSION.comiEditor.isAuthenticated = true>
+            <cfset SESSION.comiEditor.username = SESSION.halfCMS.user.username>
+            <cfset SESSION.comiEditor.homeFolder = "">
+        </cfif>
 
 		<!--- already authenticated, load the requested page --->
 		<cfif SESSION.comiEditor.isAuthenticated>
