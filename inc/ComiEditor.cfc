@@ -135,6 +135,32 @@
         <cfreturn "<h2>file created</h2>">
     </cffunction>
     
+    <cffunction name="newFolder" access="remote">
+        <cfargument name="folder" required="true">
+        <cfargument name="folderName" required="true">
+        
+        <cfset requireAuth()>
+        
+        <cfset arguments.folder = fixPath(arguments.folder)>
+        <cfset arguments.folderName = fixFileName(arguments.folderName)>
+        
+        <cfif directoryExists(expandPath(arguments.folder))>
+            <cfif directoryExists('#expandPath(arguments.folder)#/#arguments.folderName#')>
+                <cfheader statuscode="409" statustext="Conflict">
+                <cfoutput><h1>folder already exists</h1></cfoutput>
+                <cfabort>
+            <cfelse>
+                <cfdirectory action="create" directory="#expandPath(arguments.folder)#/#arguments.folderName#">
+            </cfif>
+        <cfelse>
+            <cfheader statuscode="409" statustext="Conflict">
+            <cfoutput><h1>Folder does not exists</h1></cfoutput>
+            <cfabort>
+        </cfif>
+        
+        <cfreturn "<h2>folder created</h2>">
+    </cffunction>
+    
     <cffunction name="renameFile" access="remote">
         <cfargument name="folder" required="true">
         <cfargument name="originalFileName" required="true">
@@ -165,5 +191,37 @@
         </cfif>
         
         <cfreturn "<h2>file renamed</h2>">
+    </cffunction>
+    
+    <cffunction name="renameFolder" access="remote">
+        <cfargument name="folder" required="true">
+        <cfargument name="originalFolderName" required="true">
+        <cfargument name="folderName" required="true">
+        
+        <cfset requireAuth  ()>
+        
+        <cfset arguments.folder = fixPath(arguments.folder)>
+        <cfset arguments.originalFolderName = fixFileName(arguments.originalFolderName)>
+        <cfset arguments.folderName = fixFileName(arguments.folderName)>
+        
+        <cfif directoryExists(expandPath(arguments.folder))>
+            <cfif directoryExists('#reverse(listRest(reverse(expandPath(arguments.folder)), "/"))#/#arguments.folderName#')>
+                <cfheader statuscode="409" statustext="Conflict">
+                <cfoutput><h1>directory already exists</h1></cfoutput>
+                <cfabort>
+            <cfelseif directoryExists('#expandPath(arguments.folder)#')>
+                <cfdirectory action="rename" directory="#expandPath(arguments.folder)#" newDirectory="#reverse(listRest(reverse(expandPath(arguments.folder)), "/"))#/#arguments.folderName#">
+            <cfelse>
+                <cfheader statuscode="409" statustext="Conflict">
+                <cfoutput><h1>directory does not exists</h1></cfoutput>
+                <cfabort>
+            </cfif>
+        <cfelse>
+            <cfheader statuscode="409" statustext="Conflict">
+            <cfoutput><h1>folder does not exists</h1></cfoutput>
+            <cfabort>
+        </cfif>
+        
+        <cfreturn "<h2>folder renamed</h2>">
     </cffunction>
 </cfcomponent>

@@ -7,15 +7,38 @@
 			$.loadView("[id^=" + this.id + "-]");
 		});
         
-        $("body").on("submit", ".fileContextForm", function(){
+        $("body").on("submit", ".contextForm", function(){
             var now = new Date(); 
             var then = "<time>" + now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDay()) + 
                 ' '+pad(now.getHours())+':'+pad(now.getMinutes())+":"+pad(now.getSeconds()) + "</time>"; 
             
-            var fileName = $("[name=fileName]", this).val();
-            var filePath = $("[name=folder]", this).val() + "/" + fileName;
+            var tagretName = "";
+            var actionType = "";
+            var actionVerb = "";
             
-            $("[id$=-console]").append($("<li/>").html(then + ' creating file <a href="#file=' + filePath + '">' + filePath + '</a>... '));
+            if($(this).hasClass("new")) {
+                actionVerb = "creating";
+            } else if($(this).hasClass("rename")) {
+                actionVerb = "renaming";
+            }
+            
+            if($(this).hasClass("file")) {
+                targetName = $("[name=fileName]", this).val();
+                actionType = "file";
+            } else if($(this).hasClass("folder")) {
+                targetName = $("[name=folderName]", this).val();
+                actionType = "folder";
+            }
+            
+            var filePath = "";
+            
+            if(actionVerb === "renaming") {
+                filePath = $("[name=folder]", this).val() + " -> " + targetName;
+            } else {
+                filePath = $("[name=folder]", this).val() + "/" + targetName;
+            }
+            
+            $("[id$=-console]").append($("<li/>").html(then + ' ' + actionVerb + ' ' + actionType + ' <a href="#file=' + filePath + '">' + filePath + '</a>... '));
             $("[id$=-console] li:last").attr("tabindex", "-1").focus();
             
             $.ajax({
@@ -37,12 +60,19 @@
                     
                     var selectedFolder = $("[id$=-navigator] .selected");
                     
-                    if(selectedFolder.is(".file")) {
-                        selectedFolder = selectedFolder.closest(".dir");
+                    if(selectedFolder.is(".file") || actionVerb === "renaming") {
+                        
+                        selectedFolder = selectedFolder.closest(".dir:not(.selected)");
                     }
                     
-                    var newFileLink = $("[id$=-console] li:last a");
-                    window.location.hash = newFileLink.attr("href");
+                    // refresh folder
+                    selectedFolder.trigger("click").trigger("click");
+                    
+                    var lastAction = $("[id$=-console] li:last a");
+                    
+                    if(actionType === "file") {
+                        window.location.hash = lastAction.attr("href");
+                    }
                 },
                 error: function(data) {
                     var timeDiff = new Date().getTime() - now.getTime();
@@ -69,7 +99,11 @@
         $("[id$=-navigator]").on("contextmenu", "li", function(e){
             $("#navigationMenu").remove();
             
-            var menu = $("<nav id='navigationMenu'><ul><li class='newFile'>New File</li><li>New Folder*</li><li><hr></li><li class='rename'>Rename*</li><li>Delete*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
+            // TODO: shift and control support... need to modify this (selected and active)
+            $(".selected").removeClass("selected");
+            $(this).addClass("selected");
+            
+            var menu = $("<nav id='navigationMenu'><ul><li class='newFile'>New File</li><li class='newFolder'>New Folder</li><li><hr></li><li class='rename'>Rename</li><li>Delete*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
 
             var path = "";
             var $this = this;
@@ -87,21 +121,29 @@
                 path = '/';
             }
 
-            var contextFormDialog = $('<form class="fileContextForm" method="post" action="/ce/inc/ComiEditor.cfc"><input type="hidden" name="returnFormat" value="plain"/><input type="hidden" name="method" class="action"/><input type="hidden" name="folder" value="' + path + '"/></form>');
+            var contextFormDialog = $('<form class="contextForm" method="post" action="/ce/inc/ComiEditor.cfc"><input type="hidden" name="returnFormat" value="plain"/><input type="hidden" name="method" class="action"/><input type="hidden" name="folder" value="' + path + '"/></form>');
             
             $("li", menu).on('click', function(){
                 var action = $(this).attr("class");
                 
                 if( action === 'newFile') {
+                    contextFormDialog.addClass("new file");
                     $('<label>File Name <input type="text" name="fileName" value="index.cfm"></label>').appendTo(contextFormDialog);                
+                } else if( action === 'newFolder') {
+                    contextFormDialog.addClass("new folder");
+                    $('<label>Folder Name <input type="text" name="folderName" value=""></label>').appendTo(contextFormDialog);                
                 } else if( action === 'rename' ) {
+                    contextFormDialog.addClass("rename");
                     if($($this).hasClass("file")) {
+                        contextFormDialog.addClass("file");
                         action += "File";
                         $('<label>File Name <input type="text" name="fileName" value="' + $($this).children("span").text() + '"></label><input type="hidden" name="originalFileName" value="' + $($this).children("span").text() + '">').appendTo(contextFormDialog);
+                    } else if($($this).hasClass("dir")) {
+                        contextFormDialog.addClass("folder");
+                        action += "Folder";
+                        $('<label>Folder Name <input type="text" name="folderName" value="' + $($this).children("span").text() + '"></label><input type="hidden" name="originalFolderName" value="' + $($this).children("span").text() + '">').appendTo(contextFormDialog);
                     }
                 }
-                
-                console.log(contextFormDialog);
                 
                 $(".action", contextFormDialog).val(action);
                 
@@ -121,7 +163,16 @@
                 });
             });
 
-            menu.css({position: 'absolute', top: e.pageY, left: e.pageX, background: '#eee', border: 'solid 1px #ccc', padding: '5px 10px', zIndex: 999999, boxShadow: '0 0 5px #ddd' });
+            menu.css({
+                position: 'absolute',
+                top: Math.min(e.pageY, $(this).closest("[id$=-navigator]").height() - menu.height() + 35),
+                left: e.pageX,
+                background: '#eee',
+                border: 'solid 1px #ccc',
+                padding: '5px 10px',
+                zIndex: 999999,
+                boxShadow: '0 0 5px #ddd'
+            });
             
             $("ul", menu).css({ margin: 0, padding: 0, listStyle: 'none' });
             $("li", menu).css({ cursor: 'pointer' });
