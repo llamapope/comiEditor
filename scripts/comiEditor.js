@@ -2,7 +2,7 @@
     var filePathArray = [];
     
     $(function() {
-		// load each panel of the editor
+    	// load each panel of the editor
 		$(":not([id*=-])").each(function(){
 			$.loadView("[id^=" + this.id + "-]");
 		});
@@ -20,7 +20,9 @@
                 actionVerb = "creating";
             } else if($(this).hasClass("rename")) {
                 actionVerb = "renaming";
+            } else {
             }
+            console.log(this);
             
             if($(this).hasClass("file")) {
                 targetName = $("[name=fileName]", this).val();
@@ -38,8 +40,12 @@
                 filePath = $("[name=folder]", this).val() + "/" + targetName;
             }
             
+            
+            
             $("[id$=-console]").append($("<li/>").html(then + ' ' + actionVerb + ' ' + actionType + ' <a href="#file=' + filePath + '">' + filePath + '</a>... '));
             $("[id$=-console] li:last").attr("tabindex", "-1").focus();
+            
+            
             
             $.ajax({
                 url: $(this).prop("action"),
@@ -103,7 +109,7 @@
             $(".selected").removeClass("selected");
             $(this).addClass("selected");
             
-            var menu = $("<nav id='navigationMenu'><ul><li class='newFile'>New File</li><li class='newFolder'>New Folder</li><li><hr></li><li class='rename'>Rename</li><li>Delete*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
+            var menu = $("<nav id='navigationMenu'><ul><li class='newFile'>New File</li><li class='newFolder'>New Folder</li><li><hr></li><li class='rename'>Rename</li><li class='delete'>Delete</li><li><hr></li><li class='upload'>Upload*</li><li><hr></li><li>*commands don't work</li></ul></nav>").appendTo("body");
 
             var path = "";
             var $this = this;
@@ -143,6 +149,23 @@
                         action += "Folder";
                         $('<label>Folder Name <input type="text" name="folderName" value="' + $($this).children("span").text() + '"></label><input type="hidden" name="originalFolderName" value="' + $($this).children("span").text() + '">').appendTo(contextFormDialog);
                     }
+                } else if( action === 'delete' ) {
+                    contextFormDialog.addClass("delete");
+                    if($($this).hasClass("file")) {
+                        contextFormDialog.addClass("file");
+                        action += "File";
+                        $('<div>Are you sure you want to delete this file?<br>' + path + '/' + $($this).children("span").text() + '<input type="hidden" name="fileName" value="' + $($this).children("span").text() + '"></div>').appendTo(contextFormDialog);
+                    } else if($($this).hasClass("dir")) {
+                        contextFormDialog.addClass("folder");
+                        action += "Folder";
+                        $('<div>Are you sure you want to delete this folder?<br>' + path + '</div>').appendTo(contextFormDialog);
+                    }
+                } else if( action === 'upload' ) {
+                    contextFormDialog.addClass("upload");
+                    
+                    contextFormDialog.addClass("folder");
+                    action += "Files";
+                    $('<label>Files <input type="file" multiple name="uploads"></label>').appendTo(contextFormDialog);
                 }
                 
                 $(".action", contextFormDialog).val(action);
